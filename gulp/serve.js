@@ -1,5 +1,3 @@
-'use strict';
-
 const bs = require('browser-sync');
 
 module.exports = (gulp, plugins, config) => () => {

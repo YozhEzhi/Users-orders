@@ -1,59 +1,32 @@
-.rc-intro {
-  background-color: #222;
-  padding: 2rem;
-  text-align: center;
-  margin-bottom: 3rem;
-}
+.header {
+  &-intro {
+    background-color: #222;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    text-align: center;
+  }
 
-.rc-img {
-  max-width: 50px;
-}
+  &-img {
+    max-width: 50px;
+  }
 
-.rc-title {
-  font-size: 5rem;
-  margin-top: 3rem;
-  color: #fff;
-  font-family: 'Open Sans', sans-serif;
-  font-weight: 700;
-  letter-spacing: -2px;
-}
-
-.rc-description {
-  margin-top: 2rem;
-  font-size: 2rem;
-  color: #ccc;
-}
-
-.toolbar {
-  margin-bottom: 1rem;
-  margin-top: 1rem;
-
-  .btn {
-    margin-right: 1rem;
+  &-title {
+    color: #fff;
+    font-family: "Trebuchet MS", sans-serif;
+    font-size: 5rem;
+    letter-spacing: -2px;
+    margin-top: 3rem;
   }
 }
 
-.thumbnail {
-  padding: 2rem 1rem 1rem;
-}
-
-.user-list {
+.order-list {
   border: 1px solid #ddd;
 
   td {
     vertical-align: middle !important;
   }
 
-  tr {
-    cursor: pointer;
-  }
-
   tbody tr:hover {
     background-color: #eee;
   }
 }
-
-.user-image {
-  max-width: 40px;
-}
-

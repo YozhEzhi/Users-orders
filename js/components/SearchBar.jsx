@@ -1,27 +1,43 @@
-import React, { Component } from 'react';
+import React from 'react';
+import AutoComplete from 'material-ui/AutoComplete';
 
-class SearchBar extends Component {
+class SearchBar extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      placeholder: 'Search people by name...',
+      placeholder: 'Search people...',
       term: '',
     };
+
+    this.colors = [
+      'Red',
+      'Orange',
+      'Yellow',
+      'Green',
+      'Blue',
+      'Purple',
+      'Black',
+      'White',
+    ];
+
+    this.handleRequest = this.handleRequest.bind(this);
   }
 
-  onInputChange(term) {
-    this.setState({ term });
+  handleRequest(term) {
     this.props.onFilter(term);
   }
 
   render() {
     return (
       <div className="form-group">
-        <input
-          className="search-bar form-control"
-          placeholder={this.state.placeholder}
-          onChange={event => this.onInputChange(event.target.value)}
+        <AutoComplete
+          dataSource={this.colors}
+          filter={AutoComplete.caseInsensitiveFilter}
+          floatingLabelText={this.state.placeholder}
+          fullWidth
+          onNewRequest={this.handleRequest}
+          openOnFocus
         />
       </div>
     );
@@ -30,6 +46,7 @@ class SearchBar extends Component {
 
 SearchBar.propTypes = {
   onFilter: React.PropTypes.func.isRequired,
+  users: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
 };
 
 export default SearchBar;

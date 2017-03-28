@@ -1,110 +1,67 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import SearchBar from './components/SearchBar';
-import Thumbnail from './components/Thumbnail';
-import Toolbar from './components/Toolbar';
-import UserList from './components/UserList';
+import Orders from './components/Orders';
 
-class App extends Component {
+class App extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      sortedByName: null,
-      sortedByAge: null,
       users: null,
-      searchData: null,
-      selectedUser: null,
+      orders: null,
     };
 
-    this.getData('./data.json');
-    this.selectUser = this.selectUser.bind(this);
-    this.filter = this.filter.bind(this);
-    this.sortByAge = this.sortByAge.bind(this);
-    this.sortByName = this.sortByName.bind(this);
+    this.handleAutocomplete = this.handleAutocomplete.bind(this);
+
+    this.getData();
   }
 
-  getData(data) {
-    fetch(data)
-      .then(response => response.json())
-      .then(json => this.setState({
-        users: json,
-        searchData: json,
-        selectedUser: json[0],
+  getData() {
+    Promise.all([
+      this.getJson('orders'),
+      this.getJson('users'),
+    ])
+      .then(data => this.setState({
+        orders: data[0],
+        users: data[1],
       }))
       .catch(error => console.error(error));
   }
 
-  filter(term) {
+  getJson(data) {
+    return fetch(`./${data}.json`)
+      .then(response => response.json());
+  }
+
+  handleAutocomplete(term) {
+    console.log(term);
     const data = [...this.state.searchData];
     const users = data.filter(item => item.name.toLowerCase().includes(term));
 
-    this.setState({
-      sortedByName: 'asc',
-      users,
-      selectedUser: users[0],
-    });
-  }
-
-  sortUsers(usersArr, param, reversed) {
-    const sortedUsers = usersArr.sort((a, b) => (a[param] > b[param]) ? 1 : -1);
-    return reversed ? sortedUsers.reverse() : sortedUsers;
-  }
-
-  sortByName() {
-    const reversed = (this.state.sortedByName === 'asc');
-    const sorting = reversed ? 'desc' : 'asc';
-    const users = this.sortUsers([...this.state.users], 'name', reversed);
-
-    this.setState({
-      sortedByName: sorting,
-      users,
-      selectedUser: users[0],
-    });
-  }
-
-  sortByAge() {
-    const reversed = (this.state.sortedByAge === 'asc');
-    const sorting = reversed ? 'desc' : 'asc';
-    const users = this.sortUsers([...this.state.users], 'age', reversed);
-
-    this.setState({
-      sortedByAge: sorting,
-      users,
-      selectedUser: users[0],
-    });
-  }
-
-  selectUser(selectedUser) {
-    this.setState({ selectedUser });
+    this.setState({ users });
   }
 
   render() {
-    if (!this.state.users) return (<h3>Loading...</h3>);
+    if (!this.state.users) {
+      return (
+        <div className="container">
+          <h3>Loading...</h3>
+        </div>
+      );
+    }
 
     return (
-      <div className="container app">
-        <SearchBar onFilter={this.filter} />
-
-        <div className="toolbar">
-          <Toolbar
-            icoClass={this.state.sortedByName}
-            onSortByName={this.sortByName}
-            onSortByAge={this.sortByAge}
-          />
-        </div>
-
+      <div className="container">
         <div className="row">
-          <div className="col-sm-4">
-            <Thumbnail user={this.state.selectedUser} />
+          <div className="col-sm-5">
+            <h4>Search</h4>
+            <SearchBar users={this.state.users} onFilter={this.handleAutocomplete} />
           </div>
 
-          <div className="col-sm-8">
-            <UserList
-              onUserSelect={this.selectUser}
-              users={this.state.users}
-              selectedUser={this.state.selectedUser}
-            />
+          <div className="col-sm-7">
+            <h4>Orders</h4>
+            <Orders orders={this.state.orders} />
           </div>
         </div>
       </div>
