@@ -10,7 +10,7 @@ const config = {
 };
 
 dream.customType('incrementalId', helper => helper.previousItem ? helper.previousItem.id + 1 : 0);
-
+dream.customType('user-name', helper => helper.chance.name({ middle: true }));
 const formatCardNumber = (num) => {
   const newNum = num * 1.2;
   const slicedString = parseInt(newNum, 10).toString().slice(0, 8);
@@ -31,14 +31,12 @@ dream.customType('user-card', (helper) => {
 
 dream.schema('user', {
   id: 'incrementalId',
-  firstName: 'first',
-  secondName: 'last',
-  middleName: 'first',
+  name: 'user-name',
   cardNumber: 'user-card',
 });
 
 dream.customType('order-date', (helper) => {
-  return helper.chance.date({ year: 2017, american: false }).toDateString();
+  return helper.chance.date({ year: 2017, american: false }).toString();
 });
 dream.customType('order-sum', helper => helper.chance.dollar({ min: 90, max: 100 }));
 dream.customType('order-discount', helper => helper.chance.dollar({ min: 60, max: 89 }));

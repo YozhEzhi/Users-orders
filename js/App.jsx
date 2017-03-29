@@ -1,7 +1,7 @@
 import React from 'react';
 
-import SearchBar from './components/SearchBar';
 import Orders from './components/Orders';
+import SearchBar from './components/SearchBar';
 
 class App extends React.Component {
   constructor(props) {
@@ -10,9 +10,11 @@ class App extends React.Component {
     this.state = {
       users: null,
       orders: null,
+      selectedOrder: null,
     };
 
     this.handleAutocomplete = this.handleAutocomplete.bind(this);
+    this.handleInput = this.handleInput.bind(this);
 
     this.getData();
   }
@@ -23,6 +25,7 @@ class App extends React.Component {
       this.getJson('users'),
     ])
       .then(data => this.setState({
+        initialOrders: data[0],
         orders: data[0],
         users: data[1],
       }))
@@ -30,16 +33,25 @@ class App extends React.Component {
   }
 
   getJson(data) {
-    return fetch(`./${data}.json`)
-      .then(response => response.json());
+    return fetch(`./${data}.json`).then(response => response.json());
   }
 
-  handleAutocomplete(term) {
-    console.log(term);
-    const data = [...this.state.searchData];
-    const users = data.filter(item => item.name.toLowerCase().includes(term));
+  handleAutocomplete(user) {
+    const data = [...this.state.initialOrders];
+    const orders = data.filter(item => item.cardNumber === user.cardNumber);
 
-    this.setState({ users });
+    this.setState({
+      orders,
+      selectedOrder: user.name,
+    });
+  }
+
+  handleInput(term) {
+    if (term) return;
+    this.setState({
+      orders: this.state.initialOrders,
+      selectedOrder: null,
+    });
   }
 
   render() {
@@ -51,16 +63,22 @@ class App extends React.Component {
       );
     }
 
+    const orderFor = this.state.selectedOrder ? this.state.selectedOrder : 'All';
+
     return (
       <div className="container">
         <div className="row">
-          <div className="col-sm-5">
+          <div className="col-md-5">
             <h4>Search</h4>
-            <SearchBar users={this.state.users} onFilter={this.handleAutocomplete} />
+            <SearchBar
+              onFilter={this.handleAutocomplete}
+              onInput={this.handleInput}
+              users={this.state.users}
+            />
           </div>
 
-          <div className="col-sm-7">
-            <h4>Orders</h4>
+          <div className="col-md-7">
+            <h4>{orderFor} orders</h4>
             <Orders orders={this.state.orders} />
           </div>
         </div>
