@@ -1,5 +1,5 @@
 const webpackStream = require('webpack-stream');
-const webpackConfig = require('./configs/webpack.config');
+const webpackConfig = require('./configs/webpack.dev.config');
 
 module.exports = (gulp, plugins, config) => () => {
   return gulp.src(config.paths.js)
